@@ -6,6 +6,12 @@ import (
 	"strings"
 )
 
+// mapCPUs parses `/proc/cpuinfo` to determine a mapping from an APIC ID to a
+// CPU ID.
+//
+// See:
+// - http://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller (APIC)
+// - http://en.wikipedia.org/wiki/CPUID
 func mapCPUs() (map[uint64]int, error) {
 	cpuInfo, err := ioutil.ReadFile("/proc/cpuinfo")
 	if err != nil {
@@ -14,9 +20,6 @@ func mapCPUs() (map[uint64]int, error) {
 
 	cpuMap := map[uint64]int{}
 	var processorNum int
-	// See:
-	// - http://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller (APIC)
-	// - http://en.wikipedia.org/wiki/CPUID
 	var apic uint64
 	lines := strings.Split(string(cpuInfo), "\n")
 	for i, line := range lines {
